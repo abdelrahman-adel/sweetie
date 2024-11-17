@@ -48,6 +48,11 @@
     .hidden {
       display: none;
     }
+    .timer {
+      font-size: 1rem;
+      margin-left: 10px;
+      color: #ff6f61;
+    }
     .game {
       margin-top: 20px;
     }
@@ -77,6 +82,7 @@
     <h2>💌 Ежедневный комплимент 💌</h2>
     <p id="compliment">Нажми на кнопку ниже, чтобы получить свой комплимент на сегодня!</p>
     <button class="btn" id="complimentBtn" onclick="showCompliment()">Показать комплимент</button>
+    <span id="timer" class="timer hidden">Подождите: <span id="seconds">10</span> сек</span>
   </div>
 
   <div class="card">
@@ -113,6 +119,7 @@
 
     // Показ случайного комплимента
     let complimentButtonEnabled = true;
+    let timerInterval;
     function showCompliment() {
       if (!complimentButtonEnabled) return;
 
@@ -122,12 +129,24 @@
       // Отключить кнопку на 10 секунд
       complimentButtonEnabled = false;
       const button = document.getElementById('complimentBtn');
-      button.disabled = true;
+      const timer = document.getElementById('timer');
+      const secondsSpan = document.getElementById('seconds');
 
-      setTimeout(() => {
-        complimentButtonEnabled = true;
-        button.disabled = false;
-      }, 10000);
+      button.disabled = true;
+      timer.classList.remove('hidden');
+      secondsSpan.innerText = 10;
+
+      let seconds = 10;
+      timerInterval = setInterval(() => {
+        seconds -= 1;
+        secondsSpan.innerText = seconds;
+        if (seconds <= 0) {
+          clearInterval(timerInterval);
+          complimentButtonEnabled = true;
+          button.disabled = false;
+          timer.classList.add('hidden');
+        }
+      }, 1000);
     }
 
     // Игра с сердечками
